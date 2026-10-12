@@ -141,6 +141,7 @@ form.addEventListener('submit', e => {
   onScroll();
 
   // --- loop
+
   const clock = new THREE.Clock();
   let running = true;
   document.addEventListener('visibilitychange', () => {
@@ -162,6 +163,8 @@ form.addEventListener('submit', e => {
     particles.rotation.x = mouse.y * 0.1;
 
     // scroll: fly through the particle field and tilt the shapes
+
+    
     camera.position.y = -scrollProgress * 6;
     group.position.y = (isMobile() ? 1.2 : 0) - scrollProgress * 6;
     camera.position.x = mouse.x * 0.4;
