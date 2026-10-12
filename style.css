@@ -12,7 +12,6 @@
 }
 
 *, *::before, *::after {
-  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -22,6 +21,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header-h);
   -webkit-text-size-adjust: 100%;
+}
+
+body, input, textarea, button {
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -63,11 +66,27 @@ header {
   background: rgba(13, 13, 13, 0.7);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid transparent;
   z-index: 1000;
-  transition: border-color 0.3s;
 }
-header.scrolled { border-bottom-color: var(--border); }
+header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--text-secondary), var(--purple), transparent);
+  background-size: 200% 100%;
+  animation: borderFlow 4s linear infinite;
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
+header.scrolled::after { opacity: 1; }
+
+@keyframes borderFlow {
+  from { background-position: 200% 0; }
+  to   { background-position: 0 0; }
+}
 
 .logo {
   font-size: clamp(20px, 4.5vw, 28px);
@@ -75,6 +94,22 @@ header.scrolled { border-bottom-color: var(--border); }
   color: var(--purple);
   text-decoration: none;
   white-space: nowrap;
+  background: linear-gradient(90deg, var(--purple), var(--text-secondary), #fff, var(--text-secondary), var(--purple));
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logoShine 5s linear infinite, logoFloat 3s ease-in-out infinite;
+}
+.logo:hover { animation-duration: 1.5s, 3s; }
+
+@keyframes logoShine {
+  from { background-position: 0% 0; }
+  to   { background-position: 250% 0; }
+}
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 0 rgba(124, 58, 237, 0)); }
+  50%      { transform: translateY(-2px); filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.7)); }
 }
 
 .navbar ul {
@@ -88,13 +123,37 @@ header.scrolled { border-bottom-color: var(--border); }
   color: var(--text);
   font-weight: 500;
   padding: 6px 0;
-  border-bottom: 2px solid transparent;
-  transition: color 0.3s, border-color 0.3s;
+  position: relative;
+  transition: color 0.3s;
+}
+.navbar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--text-secondary), var(--purple));
+  background-size: 200% 100%;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 .navbar a:hover,
-.navbar a.active {
-  color: var(--text-secondary);
-  border-bottom-color: var(--purple);
+.navbar a.active { color: var(--text-secondary); }
+.navbar a:hover::after,
+.navbar a.active::after {
+  transform: scaleX(1);
+  animation: underlineGrow 0.4s ease-out, underlineFlow 2s linear 0.4s infinite;
+}
+
+@keyframes underlineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes underlineFlow {
+  from { background-position: 0 0; }
+  to   { background-position: 200% 0; }
 }
 
 .menu-icon {
@@ -344,7 +403,7 @@ footer {
     padding: 10px 20px 20px;
     text-align: center;
   }
-  .navbar a { display: block; padding: 14px 0; border-bottom: 0; }
+  .navbar a { display: inline-block; padding: 14px 4px; }
 }
 
 @media (max-width: 480px) {
@@ -355,5 +414,5 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  * { transition: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
